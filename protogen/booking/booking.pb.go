@@ -227,7 +227,7 @@ func (x *BookingRequest) GetUser() *user.User {
 	return nil
 }
 
-// BookingList contains list of bookings
+// BookingList contains list of all bookings
 type BookingList struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -323,7 +323,7 @@ func (x *GetBookingByUserRequest) GetUser() *user.User {
 	return nil
 }
 
-// cancelBookingRequest request model to remove booking by user
+// cancelBookingRequest request model to cancel booking by user
 type CancelBookingRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -371,7 +371,7 @@ func (x *CancelBookingRequest) GetUser() *user.User {
 	return nil
 }
 
-// cancelBookingResponsse response model to remove booking
+// cancelBookingResponse response model to cancel booking
 type CancelBookingResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
