@@ -10,6 +10,7 @@ Run the below commands
 $ go mod tidy
 $ make
 $ go run cmd/server/main.go
+$ go run cmd/client/main.go
 ```
 ## Services 
 - Rail Booking
