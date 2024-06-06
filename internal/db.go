@@ -1,0 +1,135 @@
+package internal
+
+import (
+	"fmt"
+	"log"
+
+	bk "rail-booking/protogen/booking"
+	st "rail-booking/protogen/seats"
+)
+
+type DB struct {
+	collection []*bk.Booking
+}
+
+const MaxSeatsPerSection = 72
+
+var sectACounter int32
+var sectBCounter int32
+
+// NewDB creates a new array to mimic the behaviour of a in-memory database
+func NewDB() *DB {
+	return &DB{
+		collection: make([]*bk.Booking, 0),
+	}
+}
+
+// RailBooking adds a new ticket to the DB collection. Returns an error on duplicate booking for a user
+// Duplicate is avoided to help with easy modification and cancelation of bookings for a user
+func (d *DB) RailBooking(booking *bk.Booking) (*bk.Booking, error) {
+	log.Printf("DB Entry : booking a ticket and storing in slice db")
+	for _, b := range d.collection {
+		if b.GetUser().Email == booking.GetUser().Email {
+			log.Printf("Duplicate found in db")
+			return nil, fmt.Errorf("duplicate request for user: %s", booking.GetUser().Email)
+		}
+	}
+	d.collection = append(d.collection, booking)
+	log.Println("After booking request in db", d)
+	if booking.Section == "A" {
+		sectACounter++
+	} else {
+		sectBCounter++
+	}
+	log.Println("DB Exit : booking a ticket and storing in slice db")
+	return booking, nil
+}
+
+// GetBookingByUser returns a booking for the user
+func (d *DB) GetBookingByUser(bookingreq *bk.GetBookingByUserRequest) (*bk.Booking, error) {
+	log.Println("DB Entry : Get booking ticket for a user")
+	for _, b := range d.collection {
+		if b.User.Email == bookingreq.User.Email {
+			return b, nil
+		}
+	}
+	log.Println("DB Exit : Get booking ticket for a user")
+	return nil, fmt.Errorf("bookings not found")
+}
+
+// GetAllBookings returns list of all bookings
+func (d *DB) GetAllBookings() (*bk.BookingList, error) {
+	log.Println("DB Entry : Get All booking tickets")
+	bookingList := &bk.BookingList{}
+	if len(d.collection) > 0 {
+		bookingList.Bookings = d.collection
+	} else {
+		log.Println("DB Entry : Get All booking tickets, no bookings")
+		return nil, fmt.Errorf("bookings not found")
+	}
+	log.Println("DB Exit : Get All booking tickets")
+	return bookingList, nil
+}
+
+// cancelBooking for the user
+func (d *DB) CancelBooking(cancelBookingRequest *bk.CancelBookingRequest) (*bk.CancelBookingResponse, error) {
+	log.Println("DB Entry : Cancel booking tickets for a user")
+	for i, b := range d.collection {
+		if b.User.Email == cancelBookingRequest.User.Email {
+			d.collection[i] = d.collection[len(d.collection)-1]
+			d.collection = d.collection[:len(d.collection)-1]
+			if b.Section == "A" {
+				sectACounter--
+			} else {
+				sectBCounter--
+			}
+			log.Println("DB Exit : Canceling booking in db")
+			return &bk.CancelBookingResponse{Message: "Cancelation success"}, nil
+		}
+
+	}
+	log.Println("DB Exit : Cancel booking tickets for a user")
+	return nil, fmt.Errorf("booking not found")
+}
+
+// ModifySeatByUser modifies the seat for the user
+func (d *DB) ModifySeatByUser(seatmodRequest *bk.SeatModificationRequest) (*bk.SeatModificationResponse, error) {
+	log.Println("DB Entry : Modify  booking ticket for a user")
+	for i, b := range d.collection {
+		log.Printf("Before removing  request in db")
+		if b.User.Email == seatmodRequest.User.Email {
+			d.collection[i].Section = seatmodRequest.Section
+			d.collection[i].Seat = seatmodRequest.Seat
+			if b.Section != seatmodRequest.Section {
+				if b.Section == "A" {
+					sectACounter--
+					sectBCounter++
+				} else {
+					sectBCounter--
+					sectACounter++
+				}
+			}
+			log.Println("DB Entry : Modify  booking ticket for a user")
+			return &bk.SeatModificationResponse{Message: "Modification success"}, nil
+		}
+	}
+	log.Println("DB Exit : Modify  booking ticket for a user")
+	return nil, fmt.Errorf("booking not found")
+}
+
+// CheckBookingBySeatAndSection checks a booking for the seat and section
+func (d *DB) CheckBookingBySeatAndSection(bookingreq *st.Seats) (bool, error) {
+	log.Println("DB Entry : CheckBooking By Seat And Section ")
+	if sectACounter > MaxSeatsPerSection && sectBCounter > MaxSeatsPerSection {
+		log.Println("DB Exit : CheckBooking By Seat And Section, seats full")
+		return true, fmt.Errorf("seats full")
+	}
+	for _, b := range d.collection {
+		log.Printf("Search request in db")
+		if b.Seat == bookingreq.Seat && b.Section == bookingreq.Section {
+			return false, nil
+		}
+	}
+	log.Println("DB Exit : CheckBooking By Seat And Section, no bookings ")
+	return true, fmt.Errorf("bookings not found")
+}
