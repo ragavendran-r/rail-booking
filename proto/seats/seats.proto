@@ -1,0 +1,9 @@
+syntax = "proto3";
+option go_package = "rail-booking/protogen/booking";
+
+import "user/user.proto";
+
+message Seats {
+    int32 seat = 1;
+    string section = 2;
+}

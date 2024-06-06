@@ -1,0 +1,81 @@
+syntax = "proto3";
+option go_package = "rail-booking/protogen/booking";
+
+import "user/user.proto";
+
+// Booking msg contains booking information
+message Booking {
+  string id = 1;
+  string from = 2;
+  string to = 3;
+  float price = 4;
+  int32 seat = 5;
+  string section = 6;
+  User user = 7;
+}
+
+message Empty {
+}
+
+// BookingRequest contains booking request details
+message BookingRequest{
+  string from = 1;
+  string to = 2;
+  float price = 3;
+  User user = 4;
+}
+
+
+// BookingList contains list of all bookings
+message BookingList {
+  repeated Booking bookings = 1;
+}
+
+// GetBookingByUserRequest request model to get booking by user
+message GetBookingByUserRequest {
+  User user = 1;
+}
+
+
+// cancelBookingRequest request model to cancel booking by user
+message cancelBookingRequest {
+  User user = 1;
+}
+
+// cancelBookingResponse response model to cancel booking
+message cancelBookingResponse {
+    string message = 1;
+}
+
+// SeatModificationRequest request model to modify seat by user
+message SeatModificationRequest {
+  string section = 1;
+  int32 seat = 2;
+  User user = 3;
+}
+
+// SeatModificationResponse response model for seat modification
+message SeatModificationResponse {
+  string message = 1;
+}
+
+// BookingService service definitions for booking operations
+service BookingService {
+
+  // railBooking books a rail ticket for the user
+  rpc railBooking(BookingRequest) returns (Booking){}
+
+  // GetBookingByUser returns a booking for the user
+  rpc GetBookingByUser(GetBookingByUserRequest) returns (Booking){}
+
+  // GetAllBookings returns list of all bookings
+  rpc GetAllBookings(Empty) returns (BookingList){
+  }
+
+  // cancelBooking for the user
+  rpc cancelBooking(cancelBookingRequest) returns (cancelBookingResponse){}
+
+  // ModifySeatByUser modifies the seat for the user
+  rpc ModifySeatByUser(SeatModificationRequest) returns (SeatModificationResponse){}
+
+}
