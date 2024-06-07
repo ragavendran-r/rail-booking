@@ -2,6 +2,7 @@ package internal
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"rail-booking/protogen/booking"
 	bk "rail-booking/protogen/booking"
@@ -91,4 +92,13 @@ func (rbs *RailBookingService) ModifySeatByUser(_ context.Context, seatModReq *b
 	}
 	log.Println("Service Exit: Modify Rail booking for a user")
 	return modbookingresp, nil
+}
+
+// GetSectionBookingCount returns count of section bookings
+func (rbs *RailBookingService) GetSectionBookingCount(_ context.Context, emp *bk.Empty) (*bk.BookingCountResponse, error) {
+	log.Println("Service Entry: Get count of section bookings ")
+	bkCountResp := &bk.BookingCountResponse{}
+	bkCountResp.Message = fmt.Sprintf("Section A Booking Count: %d Section B Booking Count : %d ", rbs.db.sectACounter.Load(), rbs.db.sectBCounter.Load())
+	log.Printf("Service Exit: \n Section A Booking Count: %d and Section B Booking Count : %d ", rbs.db.sectACounter.Load(), rbs.db.sectBCounter.Load())
+	return bkCountResp, nil
 }
