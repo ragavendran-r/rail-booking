@@ -21,6 +21,11 @@ $ go test ./...
 - Modify Seat Allocation for a User
 - Booking Cancellation for a User
 
+## health
+`$ go install github.com/grpc-ecosystem/grpc-health-probe@latest`
+
+`$ grpc-health-probe -addr="0.0.0.0:50051" -service="BookingService"`
+
 ## Project Structure
 * `cmd` - contains the main files
 * `internal` - contains the services and DB files

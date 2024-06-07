@@ -34,10 +34,10 @@ func main() {
 	go func() {
 		for {
 			status := healthpb.HealthCheckResponse_SERVING
-			// Check if user Service is valid
-			if time.Now().Second()%2 == 0 {
+			// Check if Booking Service is valid
+			/* if time.Now().Second()%2 == 0 {
 				status = healthpb.HealthCheckResponse_NOT_SERVING
-			}
+			} */
 
 			healthServer.SetServingStatus(bk.BookingService_ServiceDesc.ServiceName, status)
 			healthServer.SetServingStatus("", status)
