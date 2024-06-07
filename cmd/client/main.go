@@ -40,6 +40,9 @@ func main() {
 	//Get All Rail Bookings Serice calls
 	getAllBookingsClientCall(ctx, c)
 
+	//Get Section Rail Bookings Serice calls
+	getSectionBookingsClientCall(ctx, c)
+
 	//Modify Rail Booking by User Serice calls
 	modifyRailBookingClientCall(ctx, c)
 
@@ -114,6 +117,17 @@ func getAllBookingsClientCall(ctx context.Context, c bk.BookingServiceClient) {
 		log.Printf("Could not get the booking: %v", err)
 	}
 	log.Printf("Successful Fetch of All Bookings : %s", r)
+	log.Println("")
+}
+
+func getSectionBookingsClientCall(ctx context.Context, c bk.BookingServiceClient) {
+	getSectionBookingsRequest := &bk.GetSectionBookingsRequest{Section: "A"}
+	log.Println("Get Section Rail Bookings call check")
+	r, err := c.GetSectionBookings(ctx, getSectionBookingsRequest)
+	if err != nil {
+		log.Printf("Could not get the booking: %v", err)
+	}
+	log.Printf("Successful Fetch of All Bookings for a section : %s", r)
 	log.Println("")
 }
 

@@ -22,6 +22,7 @@ const (
 	BookingService_RailBooking_FullMethodName            = "/BookingService/railBooking"
 	BookingService_GetBookingByUser_FullMethodName       = "/BookingService/GetBookingByUser"
 	BookingService_GetAllBookings_FullMethodName         = "/BookingService/GetAllBookings"
+	BookingService_GetSectionBookings_FullMethodName     = "/BookingService/GetSectionBookings"
 	BookingService_CancelBooking_FullMethodName          = "/BookingService/cancelBooking"
 	BookingService_ModifySeatByUser_FullMethodName       = "/BookingService/ModifySeatByUser"
 	BookingService_GetSectionBookingCount_FullMethodName = "/BookingService/GetSectionBookingCount"
@@ -39,6 +40,8 @@ type BookingServiceClient interface {
 	GetBookingByUser(ctx context.Context, in *GetBookingByUserRequest, opts ...grpc.CallOption) (*Booking, error)
 	// GetAllBookings returns list of all bookings
 	GetAllBookings(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*BookingList, error)
+	// GetSectionBookings returns list of all bookings for a section
+	GetSectionBookings(ctx context.Context, in *GetSectionBookingsRequest, opts ...grpc.CallOption) (*BookingList, error)
 	// cancelBooking for the user
 	CancelBooking(ctx context.Context, in *CancelBookingRequest, opts ...grpc.CallOption) (*CancelBookingResponse, error)
 	// ModifySeatByUser modifies the seat for the user
@@ -79,6 +82,16 @@ func (c *bookingServiceClient) GetAllBookings(ctx context.Context, in *Empty, op
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(BookingList)
 	err := c.cc.Invoke(ctx, BookingService_GetAllBookings_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *bookingServiceClient) GetSectionBookings(ctx context.Context, in *GetSectionBookingsRequest, opts ...grpc.CallOption) (*BookingList, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BookingList)
+	err := c.cc.Invoke(ctx, BookingService_GetSectionBookings_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -127,6 +140,8 @@ type BookingServiceServer interface {
 	GetBookingByUser(context.Context, *GetBookingByUserRequest) (*Booking, error)
 	// GetAllBookings returns list of all bookings
 	GetAllBookings(context.Context, *Empty) (*BookingList, error)
+	// GetSectionBookings returns list of all bookings for a section
+	GetSectionBookings(context.Context, *GetSectionBookingsRequest) (*BookingList, error)
 	// cancelBooking for the user
 	CancelBooking(context.Context, *CancelBookingRequest) (*CancelBookingResponse, error)
 	// ModifySeatByUser modifies the seat for the user
@@ -148,6 +163,9 @@ func (UnimplementedBookingServiceServer) GetBookingByUser(context.Context, *GetB
 }
 func (UnimplementedBookingServiceServer) GetAllBookings(context.Context, *Empty) (*BookingList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllBookings not implemented")
+}
+func (UnimplementedBookingServiceServer) GetSectionBookings(context.Context, *GetSectionBookingsRequest) (*BookingList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSectionBookings not implemented")
 }
 func (UnimplementedBookingServiceServer) CancelBooking(context.Context, *CancelBookingRequest) (*CancelBookingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CancelBooking not implemented")
@@ -225,6 +243,24 @@ func _BookingService_GetAllBookings_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BookingService_GetSectionBookings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSectionBookingsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BookingServiceServer).GetSectionBookings(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BookingService_GetSectionBookings_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BookingServiceServer).GetSectionBookings(ctx, req.(*GetSectionBookingsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BookingService_CancelBooking_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CancelBookingRequest)
 	if err := dec(in); err != nil {
@@ -297,6 +333,10 @@ var BookingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAllBookings",
 			Handler:    _BookingService_GetAllBookings_Handler,
+		},
+		{
+			MethodName: "GetSectionBookings",
+			Handler:    _BookingService_GetSectionBookings_Handler,
 		},
 		{
 			MethodName: "cancelBooking",

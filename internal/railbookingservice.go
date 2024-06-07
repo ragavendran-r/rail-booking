@@ -72,6 +72,17 @@ func (rbs *RailBookingService) GetAllBookings(_ context.Context, emp *bk.Empty) 
 	return bookingList, nil
 }
 
+// GetSectionBookings returns list of all bookings
+func (rbs *RailBookingService) GetSectionBookings(_ context.Context, req *bk.GetSectionBookingsRequest) (*bk.BookingList, error) {
+	log.Println("Service Entry: Get All Rail bookings for a section")
+	bookingList, err := rbs.db.GetSectionBookings(req)
+	if err != nil {
+		return nil, err
+	}
+	log.Println("Service Exit: Get All Rail bookings  for a section")
+	return bookingList, nil
+}
+
 // cancelBooking for the user
 func (rbs *RailBookingService) CancelBooking(_ context.Context, cancelBookingRequest *bk.CancelBookingRequest) (*bk.CancelBookingResponse, error) {
 	log.Println("Service Entry: Cancel Rail booking for a user")
