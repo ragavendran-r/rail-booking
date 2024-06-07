@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"rail-booking/protogen/booking"
+
 	bk "rail-booking/protogen/booking"
 
 	"github.com/google/uuid"
@@ -16,7 +16,7 @@ import (
 type RailBookingService struct {
 	db *DB
 	st *AllocateSeat
-	booking.UnimplementedBookingServiceServer
+	bk.UnimplementedBookingServiceServer
 }
 
 // Create a new rail booking service
