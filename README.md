@@ -11,6 +11,7 @@ $ go mod tidy
 $ make
 $ go run cmd/server/main.go
 $ go run cmd/client/main.go
+$ go test ./...
 ```
 ## Services 
 - Rail Booking
