@@ -59,6 +59,11 @@ message SeatModificationResponse {
   string message = 1;
 }
 
+// BookingCountResponse response for seat count for a section
+message BookingCountResponse {
+  string message = 1;
+}
+
 // BookingService service definitions for booking operations
 service BookingService {
 
@@ -77,5 +82,9 @@ service BookingService {
 
   // ModifySeatByUser modifies the seat for the user
   rpc ModifySeatByUser(SeatModificationRequest) returns (SeatModificationResponse){}
+
+  // GetSectionBookingCount returns count of Section A & B bookings
+  rpc GetSectionBookingCount(Empty) returns (BookingCountResponse){
+  }
 
 }

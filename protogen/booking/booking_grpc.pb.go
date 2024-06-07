@@ -19,11 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	BookingService_RailBooking_FullMethodName      = "/BookingService/railBooking"
-	BookingService_GetBookingByUser_FullMethodName = "/BookingService/GetBookingByUser"
-	BookingService_GetAllBookings_FullMethodName   = "/BookingService/GetAllBookings"
-	BookingService_CancelBooking_FullMethodName    = "/BookingService/cancelBooking"
-	BookingService_ModifySeatByUser_FullMethodName = "/BookingService/ModifySeatByUser"
+	BookingService_RailBooking_FullMethodName            = "/BookingService/railBooking"
+	BookingService_GetBookingByUser_FullMethodName       = "/BookingService/GetBookingByUser"
+	BookingService_GetAllBookings_FullMethodName         = "/BookingService/GetAllBookings"
+	BookingService_CancelBooking_FullMethodName          = "/BookingService/cancelBooking"
+	BookingService_ModifySeatByUser_FullMethodName       = "/BookingService/ModifySeatByUser"
+	BookingService_GetSectionBookingCount_FullMethodName = "/BookingService/GetSectionBookingCount"
 )
 
 // BookingServiceClient is the client API for BookingService service.
@@ -42,6 +43,8 @@ type BookingServiceClient interface {
 	CancelBooking(ctx context.Context, in *CancelBookingRequest, opts ...grpc.CallOption) (*CancelBookingResponse, error)
 	// ModifySeatByUser modifies the seat for the user
 	ModifySeatByUser(ctx context.Context, in *SeatModificationRequest, opts ...grpc.CallOption) (*SeatModificationResponse, error)
+	// GetSectionBookingCount returns count of Section A & B bookings
+	GetSectionBookingCount(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*BookingCountResponse, error)
 }
 
 type bookingServiceClient struct {
@@ -102,6 +105,16 @@ func (c *bookingServiceClient) ModifySeatByUser(ctx context.Context, in *SeatMod
 	return out, nil
 }
 
+func (c *bookingServiceClient) GetSectionBookingCount(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*BookingCountResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BookingCountResponse)
+	err := c.cc.Invoke(ctx, BookingService_GetSectionBookingCount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BookingServiceServer is the server API for BookingService service.
 // All implementations must embed UnimplementedBookingServiceServer
 // for forward compatibility
@@ -118,6 +131,8 @@ type BookingServiceServer interface {
 	CancelBooking(context.Context, *CancelBookingRequest) (*CancelBookingResponse, error)
 	// ModifySeatByUser modifies the seat for the user
 	ModifySeatByUser(context.Context, *SeatModificationRequest) (*SeatModificationResponse, error)
+	// GetSectionBookingCount returns count of Section A & B bookings
+	GetSectionBookingCount(context.Context, *Empty) (*BookingCountResponse, error)
 	mustEmbedUnimplementedBookingServiceServer()
 }
 
@@ -139,6 +154,9 @@ func (UnimplementedBookingServiceServer) CancelBooking(context.Context, *CancelB
 }
 func (UnimplementedBookingServiceServer) ModifySeatByUser(context.Context, *SeatModificationRequest) (*SeatModificationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ModifySeatByUser not implemented")
+}
+func (UnimplementedBookingServiceServer) GetSectionBookingCount(context.Context, *Empty) (*BookingCountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSectionBookingCount not implemented")
 }
 func (UnimplementedBookingServiceServer) mustEmbedUnimplementedBookingServiceServer() {}
 
@@ -243,6 +261,24 @@ func _BookingService_ModifySeatByUser_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BookingService_GetSectionBookingCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BookingServiceServer).GetSectionBookingCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BookingService_GetSectionBookingCount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BookingServiceServer).GetSectionBookingCount(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BookingService_ServiceDesc is the grpc.ServiceDesc for BookingService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -269,6 +305,10 @@ var BookingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ModifySeatByUser",
 			Handler:    _BookingService_ModifySeatByUser_Handler,
+		},
+		{
+			MethodName: "GetSectionBookingCount",
+			Handler:    _BookingService_GetSectionBookingCount_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

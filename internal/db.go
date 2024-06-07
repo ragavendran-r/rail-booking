@@ -3,19 +3,19 @@ package internal
 import (
 	"fmt"
 	"log"
+	"sync/atomic"
 
 	bk "rail-booking/protogen/booking"
 	st "rail-booking/protogen/seats"
 )
 
 type DB struct {
-	collection []*bk.Booking
+	collection   []*bk.Booking
+	sectACounter atomic.Int32
+	sectBCounter atomic.Int32
 }
 
 const MaxSeatsPerSection = 72
-
-var sectACounter int32
-var sectBCounter int32
 
 // NewDB creates a new array to mimic the behaviour of a in-memory database
 func NewDB() *DB {
@@ -37,9 +37,9 @@ func (d *DB) RailBooking(booking *bk.Booking) (*bk.Booking, error) {
 	d.collection = append(d.collection, booking)
 	log.Println("After booking request in db", d)
 	if booking.Section == "A" {
-		sectACounter++
+		d.sectACounter.Add(1)
 	} else {
-		sectBCounter++
+		d.sectBCounter.Add(1)
 	}
 	log.Println("DB Exit : booking a ticket and storing in slice db")
 	return booking, nil
@@ -79,9 +79,9 @@ func (d *DB) CancelBooking(cancelBookingRequest *bk.CancelBookingRequest) (*bk.C
 			d.collection[i] = d.collection[len(d.collection)-1]
 			d.collection = d.collection[:len(d.collection)-1]
 			if b.Section == "A" {
-				sectACounter--
+				d.sectACounter.Add(-1)
 			} else {
-				sectBCounter--
+				d.sectBCounter.Add(-1)
 			}
 			log.Println("DB Exit : Canceling booking in db")
 			return &bk.CancelBookingResponse{Message: "Cancelation success"}, nil
@@ -96,19 +96,24 @@ func (d *DB) CancelBooking(cancelBookingRequest *bk.CancelBookingRequest) (*bk.C
 func (d *DB) ModifySeatByUser(seatmodRequest *bk.SeatModificationRequest) (*bk.SeatModificationResponse, error) {
 	log.Println("DB Entry : Modify  booking ticket for a user")
 	for i, b := range d.collection {
-		log.Printf("Before removing  request in db")
+
 		if b.User.Email == seatmodRequest.User.Email {
-			d.collection[i].Section = seatmodRequest.Section
-			d.collection[i].Seat = seatmodRequest.Seat
+			log.Printf("Updating seat in db existing sec: %s, incoming sec: %s", b.Section, seatmodRequest.Section)
 			if b.Section != seatmodRequest.Section {
+				log.Printf("Inside section compare existing sec: %s, incoming sec: %s", b.Section, seatmodRequest.Section)
 				if b.Section == "A" {
-					sectACounter--
-					sectBCounter++
+					log.Println("Modify booking section counter change for A")
+					d.sectACounter.Add(-1)
+					d.sectBCounter.Add(1)
 				} else {
-					sectBCounter--
-					sectACounter++
+					log.Println("Modify booking section counter change for B")
+					d.sectBCounter.Add(-1)
+					d.sectACounter.Add(1)
 				}
 			}
+			d.collection[i].Section = seatmodRequest.Section
+			d.collection[i].Seat = seatmodRequest.Seat
+			log.Printf("After Updating seat in db existing sec: %s, incoming sec: %s", b.Section, seatmodRequest.Section)
 			log.Println("DB Entry : Modify  booking ticket for a user")
 			return &bk.SeatModificationResponse{Message: "Modification success"}, nil
 		}
@@ -120,7 +125,7 @@ func (d *DB) ModifySeatByUser(seatmodRequest *bk.SeatModificationRequest) (*bk.S
 // CheckBookingBySeatAndSection checks a booking for the seat and section
 func (d *DB) CheckBookingBySeatAndSection(bookingreq *st.Seats) (bool, error) {
 	log.Println("DB Entry : CheckBooking By Seat And Section ")
-	if sectACounter > MaxSeatsPerSection && sectBCounter > MaxSeatsPerSection {
+	if d.sectACounter.Load() > MaxSeatsPerSection && d.sectBCounter.Load() > MaxSeatsPerSection {
 		log.Println("DB Exit : CheckBooking By Seat And Section, seats full")
 		return true, fmt.Errorf("seats full")
 	}
