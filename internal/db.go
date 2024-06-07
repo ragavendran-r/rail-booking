@@ -71,6 +71,19 @@ func (d *DB) GetAllBookings() (*bk.BookingList, error) {
 	return bookingList, nil
 }
 
+// GetSectionBookings returns list of all bookings for a section
+func (d *DB) GetSectionBookings(req *bk.GetSectionBookingsRequest) (*bk.BookingList, error) {
+	log.Println("DB Entry : Get All booking tickets for a section")
+	bookingList := &bk.BookingList{}
+	for _, b := range d.collection {
+		if b.Section == req.GetSection() {
+			bookingList.Bookings = append(bookingList.Bookings, b)
+		}
+	}
+	log.Println("DB Exit : Get All booking tickets for a section")
+	return bookingList, nil
+}
+
 // cancelBooking for the user
 func (d *DB) CancelBooking(cancelBookingRequest *bk.CancelBookingRequest) (*bk.CancelBookingResponse, error) {
 	log.Println("DB Entry : Cancel booking tickets for a user")

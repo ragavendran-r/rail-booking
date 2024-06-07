@@ -126,6 +126,32 @@ func TestRailBookingService_GetAllBookings(t *testing.T) {
 	}
 }
 
+func TestRailBookingService_GetSectionBookings(t *testing.T) {
+	log.Println("Testing GetAllBookings Service")
+	// create a rail booking service instance with a reference to the db and seat allocation service
+	db := NewDB()
+	st := NewAllocateSeat(db)
+	railBookingService := NewRailBookingService(db, st)
+	conn := newServer(t, func(srv *grpc.Server) {
+		bk.RegisterBookingServiceServer(srv, &railBookingService)
+	})
+
+	client := bk.NewBookingServiceClient(conn)
+	res, err := client.RailBooking(context.Background(), &bk.BookingRequest{From: "Chennai", To: "Delhi", Price: 20, User: &ur.User{FirstName: "Ragav", LastName: "Ram", Email: "ragav@gmail.com"}})
+	if err != nil {
+		t.Fatalf("client.RailBooking %v %v", err, res)
+	}
+	getSectionBookingsRequest := &bk.GetSectionBookingsRequest{Section: "A"}
+	log.Println("Get All Rail Bookings")
+	bookingsResp, err1 := client.GetSectionBookings(context.Background(), getSectionBookingsRequest)
+	if err1 != nil {
+		t.Fatalf("client.GetBookingByUser %v", err1)
+	}
+	if len(bookingsResp.GetBookings()) > 0 && bookingsResp.GetBookings()[0].GetSection() == "" && bookingsResp.GetBookings()[0].GetSeat() == 0 {
+		t.Fatalf("Unexpected values %v", bookingsResp)
+	}
+}
+
 func TestRailBookingService_ModifySeatByUser(t *testing.T) {
 
 	// create a rail booking service instance with a reference to the db and seat allocation service

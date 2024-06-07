@@ -31,6 +31,11 @@ message BookingList {
   repeated Booking bookings = 1;
 }
 
+// GetSectionBookingsRequest request model to get bookings by section
+message GetSectionBookingsRequest {
+  string section = 1;
+}
+
 // GetBookingByUserRequest request model to get booking by user
 message GetBookingByUserRequest {
   User user = 1;
@@ -75,6 +80,10 @@ service BookingService {
 
   // GetAllBookings returns list of all bookings
   rpc GetAllBookings(Empty) returns (BookingList){
+  }
+
+  // GetSectionBookings returns list of all bookings for a section
+  rpc GetSectionBookings(GetSectionBookingsRequest) returns (BookingList){
   }
 
   // cancelBooking for the user

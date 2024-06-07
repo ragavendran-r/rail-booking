@@ -17,6 +17,7 @@ $ go test ./...
 - Rail Booking
 - Get Booking By User
 - Get All Bookings
+- Get Section Bookings
 - Modify Seat Allocation for a User
 - Booking Cancellation for a User
 
