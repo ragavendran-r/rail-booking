@@ -15,6 +15,13 @@ $ go test ./...
 $ go test ./... -coverprofile coverage.out -json > report.json
 $ sonar-scanner -D"sonar.token=<sonar project token>"
 ```
+
+## docker
+```
+$ docker build --tag rail-booking-container .
+$ docker run --publish 50051:50051 rail-booking-container
+```
+
 ## Services 
 - Rail Booking
 - Get Booking By User
