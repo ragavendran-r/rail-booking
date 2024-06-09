@@ -16,6 +16,7 @@ type DB struct {
 }
 
 const MaxSeatsPerSection = 72
+const BKNGS_NOT_FOUND string = "bookings not found"
 
 // NewDB creates a new array to mimic the behaviour of a in-memory database
 func NewDB() *DB {
@@ -54,7 +55,7 @@ func (d *DB) GetBookingByUser(bookingreq *bk.GetBookingByUserRequest) (*bk.Booki
 		}
 	}
 	log.Println("DB Exit : Get booking ticket for a user")
-	return nil, fmt.Errorf("bookings not found")
+	return nil, fmt.Errorf(BKNGS_NOT_FOUND)
 }
 
 // GetAllBookings returns list of all bookings
@@ -65,7 +66,7 @@ func (d *DB) GetAllBookings() (*bk.BookingList, error) {
 		bookingList.Bookings = d.collection
 	} else {
 		log.Println("DB Entry : Get All booking tickets, no bookings")
-		return nil, fmt.Errorf("bookings not found")
+		return nil, fmt.Errorf(BKNGS_NOT_FOUND)
 	}
 	log.Println("DB Exit : Get All booking tickets")
 	return bookingList, nil
@@ -149,5 +150,5 @@ func (d *DB) CheckBookingBySeatAndSection(bookingreq *st.Seats) (bool, error) {
 		}
 	}
 	log.Println("DB Exit : CheckBooking By Seat And Section, no bookings ")
-	return true, fmt.Errorf("bookings not found")
+	return true, fmt.Errorf(BKNGS_NOT_FOUND)
 }

@@ -12,6 +12,8 @@ $ make
 $ go run cmd/server/main.go
 $ go run cmd/client/main.go
 $ go test ./...
+$ go test ./... -coverprofile coverage.out -json > report.json
+$ sonar-scanner -D"sonar.token=<sonar project token>"
 ```
 ## Services 
 - Rail Booking

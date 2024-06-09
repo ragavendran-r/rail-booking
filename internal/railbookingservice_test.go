@@ -14,6 +14,12 @@ import (
 	"google.golang.org/grpc/test/bufconn"
 )
 
+var (
+
+	//name = flag.String("name", defaultName, "Name to greet")
+	TEST_USER1 = &ur.User{FirstName: "Ragav", LastName: "Ram", Email: "ragav@gmail.com"}
+)
+
 func newServer(t *testing.T, register func(srv *grpc.Server)) *grpc.ClientConn {
 	lis := bufconn.Listen(1024 * 1024)
 	t.Cleanup(func() {
@@ -64,7 +70,7 @@ func TestRailBookingService_RailBooking(t *testing.T) {
 	})
 
 	client := bk.NewBookingServiceClient(conn)
-	res, err := client.RailBooking(context.Background(), &bk.BookingRequest{From: "Chennai", To: "Delhi", Price: 20, User: &ur.User{FirstName: "Ragav", LastName: "Ram", Email: "ragav@gmail.com"}})
+	res, err := client.RailBooking(context.Background(), &bk.BookingRequest{From: "Chennai", To: "Delhi", Price: 20, User: TEST_USER1})
 	if err != nil {
 		t.Fatalf("client.RailBooking %v", err)
 	}
@@ -85,11 +91,11 @@ func TestRailBookingService_GetBookingByUser(t *testing.T) {
 	})
 
 	client := bk.NewBookingServiceClient(conn)
-	res, err := client.RailBooking(context.Background(), &bk.BookingRequest{From: "Chennai", To: "Delhi", Price: 20, User: &ur.User{FirstName: "Ragav", LastName: "Ram", Email: "ragav@gmail.com"}})
+	res, err := client.RailBooking(context.Background(), &bk.BookingRequest{From: "Chennai", To: "Delhi", Price: 20, User: TEST_USER1})
 	if err != nil {
 		t.Fatalf("client.RailBooking %v %v", err, res)
 	}
-	bookingRequestByUser := &bk.GetBookingByUserRequest{User: &ur.User{FirstName: "Ragav", LastName: "Ram", Email: "ragav@gmail.com"}}
+	bookingRequestByUser := &bk.GetBookingByUserRequest{User: TEST_USER1}
 	log.Println("Get Rail Booking by User call check for wrong user and error is thrown")
 	bookingResp, err1 := client.GetBookingByUser(context.Background(), bookingRequestByUser)
 	if err1 != nil {
@@ -111,7 +117,7 @@ func TestRailBookingService_GetAllBookings(t *testing.T) {
 	})
 
 	client := bk.NewBookingServiceClient(conn)
-	res, err := client.RailBooking(context.Background(), &bk.BookingRequest{From: "Chennai", To: "Delhi", Price: 20, User: &ur.User{FirstName: "Ragav", LastName: "Ram", Email: "ragav@gmail.com"}})
+	res, err := client.RailBooking(context.Background(), &bk.BookingRequest{From: "Chennai", To: "Delhi", Price: 20, User: TEST_USER1})
 	if err != nil {
 		t.Fatalf("client.RailBooking %v %v", err, res)
 	}
@@ -137,7 +143,7 @@ func TestRailBookingService_GetSectionBookings(t *testing.T) {
 	})
 
 	client := bk.NewBookingServiceClient(conn)
-	res, err := client.RailBooking(context.Background(), &bk.BookingRequest{From: "Chennai", To: "Delhi", Price: 20, User: &ur.User{FirstName: "Ragav", LastName: "Ram", Email: "ragav@gmail.com"}})
+	res, err := client.RailBooking(context.Background(), &bk.BookingRequest{From: "Chennai", To: "Delhi", Price: 20, User: TEST_USER1})
 	if err != nil {
 		t.Fatalf("client.RailBooking %v %v", err, res)
 	}
@@ -163,11 +169,11 @@ func TestRailBookingService_ModifySeatByUser(t *testing.T) {
 	})
 
 	client := bk.NewBookingServiceClient(conn)
-	res, err := client.RailBooking(context.Background(), &bk.BookingRequest{From: "Chennai", To: "Delhi", Price: 20, User: &ur.User{FirstName: "Ragav", LastName: "Ram", Email: "ragav@gmail.com"}})
+	res, err := client.RailBooking(context.Background(), &bk.BookingRequest{From: "Chennai", To: "Delhi", Price: 20, User: TEST_USER1})
 	if err != nil {
 		t.Fatalf("client.RailBooking %v %v", err, res)
 	}
-	modifyBookingsRequest := &bk.SeatModificationRequest{Section: "A", Seat: 40, User: &ur.User{FirstName: "Ragav", LastName: "Ram", Email: "ragav@gmail.com"}}
+	modifyBookingsRequest := &bk.SeatModificationRequest{Section: "A", Seat: 40, User: TEST_USER1}
 	log.Println("Get Rail Booking by User call check for wrong user and error is thrown")
 	modResp, err1 := client.ModifySeatByUser(context.Background(), modifyBookingsRequest)
 	if err1 != nil {
@@ -189,11 +195,11 @@ func TestRailBookingService_CancelBooking(t *testing.T) {
 	})
 
 	client := bk.NewBookingServiceClient(conn)
-	res, err := client.RailBooking(context.Background(), &bk.BookingRequest{From: "Chennai", To: "Delhi", Price: 20, User: &ur.User{FirstName: "Ragav", LastName: "Ram", Email: "ragav@gmail.com"}})
+	res, err := client.RailBooking(context.Background(), &bk.BookingRequest{From: "Chennai", To: "Delhi", Price: 20, User: TEST_USER1})
 	if err != nil {
 		t.Fatalf("client.RailBooking %v %v", err, res)
 	}
-	cancelBookingsRequest := &bk.CancelBookingRequest{User: &ur.User{FirstName: "Ragav", LastName: "Ram", Email: "ragav@gmail.com"}}
+	cancelBookingsRequest := &bk.CancelBookingRequest{User: TEST_USER1}
 	log.Println("Get Rail Booking by User call check for wrong user and error is thrown")
 	cancelResp, err1 := client.CancelBooking(context.Background(), cancelBookingsRequest)
 	if err1 != nil {
