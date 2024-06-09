@@ -25,9 +25,8 @@ $ sonar-scanner -D"sonar.token=<sonar project token>"
 
 ## health
 ```
-`$ go install github.com/grpc-ecosystem/grpc-health-probe@latest`
-
-`$ grpc-health-probe -addr="0.0.0.0:50051" -service="BookingService"`
+$ go install github.com/grpc-ecosystem/grpc-health-probe@latest
+$ grpc-health-probe -addr="0.0.0.0:50051" -service="BookingService"
 ```
 
 ## Project Structure
