@@ -11,7 +11,7 @@ $ go mod tidy
 $ make
 $ go run cmd/server/main.go
 $ go run cmd/client/main.go
-$ go test ./...
+$ go test -v ./...
 $ go test ./... -coverprofile coverage.out -json > report.json
 $ sonar-scanner -D"sonar.token=<sonar project token>"
 ```
@@ -20,6 +20,8 @@ $ sonar-scanner -D"sonar.token=<sonar project token>"
 ```
 $ docker build --tag rail-booking-container .
 $ docker run --publish 50051:50051 rail-booking-container
+$ docker build -f Dockerfile.multistage -t rail-booking-container-test --progress plain --no-cache --target run-test-stage .
+$ docker build -f Dockerfile.multistage -t rail-booking-container-rel --progress plain --no-cache --target build-release-stage .
 ```
 
 ## Services 
