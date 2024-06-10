@@ -25,6 +25,7 @@ $ docker build -f Dockerfile.multistage -t rail-booking-container-rel --progress
 ```
 
 ## Services 
+
 - Rail Booking
 - Get Booking By User
 - Get All Bookings
@@ -33,6 +34,7 @@ $ docker build -f Dockerfile.multistage -t rail-booking-container-rel --progress
 - Booking Cancellation for a User
 
 ## health
+
 ```
 $ go install github.com/grpc-ecosystem/grpc-health-probe@latest
 $ grpc-health-probe -addr="0.0.0.0:50051" -service="BookingService"
@@ -54,6 +56,7 @@ $ go tool pprof -http=:8080 mem.prof
 ```
 
 ## Project Structure
+
 * `cmd` - contains the main files
 * `internal` - contains the services and DB files
 * `proto` - proto files
@@ -62,7 +65,8 @@ $ go tool pprof -http=:8080 mem.prof
 
 
 ## tools (for windows)
-`install chocolatey as mentioned [here](https://chocolatey.org/install) `
+
+`install chocolatey as mentioned` [here](https://chocolatey.org/install) 
 ```
 $ choco install make
 $ choco install protoc
