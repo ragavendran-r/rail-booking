@@ -38,4 +38,6 @@ USER nonroot:nonroot
 
 # Run
 #CMD [ "/rail-booking-container" ]
+#docker build -f Dockerfile.multistage -t rail-booking-container-rel --progress plain --no-cache --target build-release-stage .
+#docker run --publish 50051:50051 rail-booking-container-rel
 ENTRYPOINT ["/rail-booking-container"]

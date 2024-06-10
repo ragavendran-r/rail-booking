@@ -3,9 +3,12 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"log"
+	"os"
 	bk "rail-booking/protogen/booking"
 	ur "rail-booking/protogen/user"
+	"runtime/pprof"
 	"time"
 
 	"google.golang.org/grpc"
@@ -25,6 +28,17 @@ const BKNGS_NOT_SUCCESS string = "Bookings not successful"
 
 func main() {
 	flag.Parse()
+	// Start profiling
+	f, err := os.Create("railbooking.prof")
+	if err != nil {
+
+		fmt.Println(err)
+		return
+
+	}
+	pprof.StartCPUProfile(f)
+	defer pprof.StopCPUProfile()
+
 	// Set up a connection to the server.
 	conn, err := grpc.NewClient(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
