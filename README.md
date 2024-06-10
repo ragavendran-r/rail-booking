@@ -38,9 +38,19 @@ $ go install github.com/grpc-ecosystem/grpc-health-probe@latest
 $ grpc-health-probe -addr="0.0.0.0:50051" -service="BookingService"
 ```
 
-##performance
+## performance
+
+### with pprof tool generated profile
+
 ```
 $ go tool pprof -http=:8080 railbooking.prof
+```
+### with go test generated profile
+
+```
+$ go test ./internal -cpuprofile cpu.prof -memprofile mem.prof -bench .
+$ go tool pprof -http=:8080 cpu.prof
+$ go tool pprof -http=:8080 mem.prof
 ```
 
 ## Project Structure
@@ -49,3 +59,12 @@ $ go tool pprof -http=:8080 railbooking.prof
 * `proto` - proto files
 * `protogen` - generated files for the proto
 * `Makefile` - runs the protoc 
+
+
+## tools (for windows)
+`install chocolatey as mentioned [here](https://chocolatey.org/install) `
+```
+$ choco install make
+$ choco install protoc
+$ choco install graphviz 
+```
