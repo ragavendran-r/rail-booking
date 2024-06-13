@@ -25,3 +25,6 @@ EXPOSE 50051
 
 # Run
 CMD [ "/rail-booking-container" ]
+
+#docker build --tag rail-booking-container .
+#docker run --publish 50051:50051 rail-booking-container

@@ -72,6 +72,7 @@ Windows powershell, under ssl folder, execute below command to generate server a
 
 ## tools (for windows)
 
+`install docker on windows as mentioned `[here](https://docs.docker.com/desktop/install/windows-install/)
 `install chocolatey as mentioned` [here](https://chocolatey.org/install) 
 ```
 $ choco install make
@@ -79,3 +80,9 @@ $ choco install protoc
 $ choco install graphviz 
 $ choco install openssl
 ```
+Run sonarqube server as docker 
+
+```
+$ docker run -d --name sonarqube -p 9000:9000 sonarqube
+```
+`install sonar scanner as mentioned` [here](https://docs.sonarsource.com/sonarqube/9.9/analyzing-source-code/scanners/sonarscanner/)
