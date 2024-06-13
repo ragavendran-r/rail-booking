@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/health"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 )
@@ -20,9 +21,24 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
+	//Enabling SSL
+	opts := []grpc.ServerOption{}
+
+	tls := false // change that to true if needed
+	if tls {
+		certFile := "ssl/server.crt"
+		keyFile := "ssl/server.pem"
+		creds, err := credentials.NewServerTLSFromFile(certFile, keyFile)
+
+		if err != nil {
+			log.Fatalf("Failed loading certificates: %v\n", err)
+		}
+		opts = append(opts, grpc.Creds(creds))
+	}
 
 	// create a gRPC server instance
-	server := grpc.NewServer()
+	//server := grpc.NewServer()
+	server := grpc.NewServer(opts...)
 
 	// create a rail booking service instance with a reference to the db and seat allocation service
 	db := internal.NewDB()

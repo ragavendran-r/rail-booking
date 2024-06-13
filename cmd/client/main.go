@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 )
@@ -40,8 +41,24 @@ func main() {
 	pprof.StartCPUProfile(f)
 	defer pprof.StopCPUProfile()
 
-	// Set up a connection to the server.
+	//Enable or disable TLS
+	tls := false // change that to true if needed
+	opts := []grpc.DialOption{}
+	if tls {
+		certFile := "ssl/ca.crt"
+		creds, err := credentials.NewClientTLSFromFile(certFile, "")
+
+		if err != nil {
+			log.Fatalf("Error loading CA trust certificate: %v\n", err)
+		}
+		opts = append(opts, grpc.WithTransportCredentials(creds))
+		// Set up a connection to the server.
+
+	}
+	//Comment if TLS is true
 	conn, err := grpc.NewClient(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	//Uncomment if TLS is true
+	//conn, err: = grpc.NewClient(*addr, opts...)
 	if err != nil {
 		log.Printf("did not connect: %v", err)
 	}

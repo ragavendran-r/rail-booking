@@ -62,7 +62,13 @@ $ go tool pprof -http=:8080 mem.prof
 * `proto` - proto files
 * `protogen` - generated files for the proto
 * `Makefile` - runs the protoc 
+* `ssl - contains files for enabling TLS or ssl`
 
+## ssl
+
+Windows powershell, under ssl folder, execute below command to generate server and client certificates
+
+`.\ssl.ps1`
 
 ## tools (for windows)
 
@@ -71,4 +77,5 @@ $ go tool pprof -http=:8080 mem.prof
 $ choco install make
 $ choco install protoc
 $ choco install graphviz 
+$ choco install openssl
 ```
