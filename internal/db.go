@@ -7,6 +7,9 @@ import (
 
 	bk "rail-booking/protogen/booking"
 	st "rail-booking/protogen/seats"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type DB struct {
@@ -103,7 +106,8 @@ func (d *DB) CancelBooking(cancelBookingRequest *bk.CancelBookingRequest) (*bk.C
 
 	}
 	log.Println("DB Exit : Cancel booking tickets for a user")
-	return nil, fmt.Errorf("booking not found")
+	//return nil, fmt.Errorf("booking not found")
+	return nil, status.Errorf(codes.NotFound, fmt.Sprintf("booking not found: %s\n", cancelBookingRequest.User.Email))
 }
 
 // ModifySeatByUser modifies the seat for the user

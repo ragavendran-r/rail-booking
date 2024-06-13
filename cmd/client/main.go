@@ -13,6 +13,7 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
 )
 
 var (
@@ -76,6 +77,15 @@ func cancelBookingClientCall(ctx context.Context, c bk.BookingServiceClient) {
 	log.Println("Cancel Rail Booking by User call check")
 	cancelResp, err := c.CancelBooking(ctx, cancelBookingsRequest)
 	if err != nil {
+		//gRPC Error handling
+		e, ok := status.FromError(err)
+		if ok {
+			log.Printf("Error message from Server : %s", e.Message())
+			log.Printf("Error Code from Server : %s", e.Code())
+		} else {
+			log.Fatalf("A non gRPC error: %v\n", e)
+		}
+
 		log.Printf("Could not Cancel the booking: %v", err)
 	}
 	log.Printf("Successful Cancelation of Booking : %s", cancelResp)
@@ -89,6 +99,14 @@ func cancelBookingClientCall(ctx context.Context, c bk.BookingServiceClient) {
 	log.Println("Cancel Rail Booking by User call check")
 	cancelResp, err = c.CancelBooking(ctx, cancelBookingsRequest)
 	if err != nil {
+		//gRPC Error handling
+		e, ok := status.FromError(err)
+		if ok {
+			log.Printf("Error message from Server : %s", e.Message())
+			log.Printf("Error Code from Server : %s", e.Code())
+		} else {
+			log.Fatalf("A non gRPC error: %v\n", e)
+		}
 		log.Printf("Could not Cancel the booking: %v", err)
 	} else {
 		log.Printf("Successful Cancelation of Booking : %s", cancelResp)
