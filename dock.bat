@@ -1,0 +1,1 @@
+docker run --publish 50051:50051 rail-booking-container
