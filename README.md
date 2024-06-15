@@ -42,12 +42,13 @@ $ grpc-health-probe -addr="0.0.0.0:50051" -service="BookingService"
 
 ## performance
 
-### with pprof tool generated profile
+### generate and visualize CPU profile with pprof tool 
 
+generated the profile with pprof.StartCPUProfile(filename) in the client main
 ```
 $ go tool pprof -http=:8080 railbooking.prof
 ```
-### with go test generated profile
+### generate profiles with go test 
 
 ```
 $ go test ./internal -cpuprofile cpu.prof -memprofile mem.prof -bench .
