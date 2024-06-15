@@ -42,17 +42,29 @@ $ grpc-health-probe -addr="0.0.0.0:50051" -service="BookingService"
 
 ## performance
 
-### with pprof tool generated profile
+### generate and visualize CPU profile with pprof tool 
 
+generate the profile with pprof.StartCPUProfile(filename) in the client main and visualize with below command
 ```
 $ go tool pprof -http=:8080 railbooking.prof
 ```
-### with go test generated profile
+### generate profiles with go test 
 
+visualize the generated profiles with pprof tool
 ```
 $ go test ./internal -cpuprofile cpu.prof -memprofile mem.prof -bench .
 $ go tool pprof -http=:8080 cpu.prof
 $ go tool pprof -http=:8080 mem.prof
+```
+### profile guided optimization (pgo)
+
+generate go build with cpu profile for compiling optimization
+```
+$ go build -pgo railbooking.prof .\cmd\server\main.go
+```
+Generate new profile out with the new build railbooking.pgo.prof and compare
+```
+$ go tool pprof -diff_base .\railbooking.prof -top .\railbooking.pgo.prof
 ```
 
 ## Project Structure
@@ -68,7 +80,7 @@ $ go tool pprof -http=:8080 mem.prof
 
 Windows powershell, under ssl folder, execute below command to generate server and client certificates
 
-`.\ssl.ps1`
+`$ .\ssl.ps1`
 
 ## tools (for windows)
 
