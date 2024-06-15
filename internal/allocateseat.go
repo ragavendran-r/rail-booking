@@ -5,7 +5,6 @@ import (
 	"log"
 	"math/rand"
 	st "rail-booking/protogen/seats"
-	"time"
 )
 
 type AllocateSeat struct {
@@ -15,9 +14,6 @@ type AllocateSeat struct {
 // NewAllocateSeat creates a new instance
 func NewAllocateSeat(db *DB) *AllocateSeat {
 	return &AllocateSeat{db: db}
-}
-func init() {
-	rand.Seed(time.Now().UnixNano())
 }
 
 // For random allocation of a Section for a booking

@@ -54,6 +54,16 @@ $ go test ./internal -cpuprofile cpu.prof -memprofile mem.prof -bench .
 $ go tool pprof -http=:8080 cpu.prof
 $ go tool pprof -http=:8080 mem.prof
 ```
+### profile guided optimization (pgo)
+
+generate go build with cpu profile for compiling optimization
+```
+$ go build -pgo railbooking.prof .\cmd\server\main.go
+```
+Generate new profile out with the new build railbooking.pgo.prof and compare
+```
+go tool pprof -diff_base .\railbooking.prof -top .\railbooking.pgo.prof
+```
 
 ## Project Structure
 
