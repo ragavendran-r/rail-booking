@@ -58,7 +58,7 @@ $ go tool pprof -http=:8080 mem.prof
 ```
 ### profile guided optimization (pgo)
 
-generate go build with cpu profile for compiling optimization
+generate go build with cpu profile for compiling optimization. To know more on pgo, visit [here](https://www.youtube.com/watch?v=FwzE5Sdhhdw)
 ```
 $ go build -pgo railbooking.prof .\cmd\server\main.go
 ```
