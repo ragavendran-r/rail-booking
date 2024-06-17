@@ -24,7 +24,6 @@ jobs:
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           IMAGE_NAME: rail-booking-image
-      - name: Build the Docker image
         run: |
-          docker build . --file Dockerfile --tag rail-booking:$(date +%s)
+          docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME .
           docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:latest
