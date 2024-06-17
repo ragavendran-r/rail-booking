@@ -74,7 +74,7 @@ $ go tool pprof -diff_base .\railbooking.prof -top .\railbooking.pgo.prof
 * `proto` - proto files
 * `protogen` - generated files for the proto
 * `Makefile` - runs the protoc 
-* `ssl - contains files for enabling TLS or ssl`
+* `ssl` - contains files for enabling TLS or ssl
 
 ## ssl
 
@@ -84,7 +84,7 @@ Windows powershell, under ssl folder, execute below command to generate server a
 
 ## tools (for windows)
 
-`install docker on windows as mentioned `[here](https://docs.docker.com/desktop/install/windows-install/)
+`install docker on windows as mentioned `[here](https://docs.docker.com/desktop/install/windows-install/).
 `install chocolatey as mentioned` [here](https://chocolatey.org/install) 
 ```
 $ choco install make
